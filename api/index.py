@@ -49,7 +49,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 @app.post("/api/upload")
 async def upload_file(file: UploadFile = File(...)):
     global chatbot_manager  # Use the global variable to store the ChatbotManager instance
-    logger.info('got upload request ')
+    print('got upload request ')
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     with open(file_location, "wb") as f:
         f.write(await file.read())
@@ -58,7 +58,7 @@ async def upload_file(file: UploadFile = File(...)):
     try:
 
         result = embeddings_manager.create_embeddings(file_location)
-        logger.info(result)
+        print(result)
 
         # Initialize the ChatbotManager after embeddings are created
         chatbot_manager = ChatbotManager(
@@ -70,10 +70,10 @@ async def upload_file(file: UploadFile = File(...)):
             qdrant_url="http://localhost:6333",
             collection_name="vector_db"
         )
-        logger.info("ChatbotManager initialized successfully.")
+        print("ChatbotManager initialized successfully.")
 
     except Exception as e:
-        logger.error(f"Error creating embeddings: {e}")
+        print(f"Error creating embeddings: {e}")
         return {"message": "Failed to process the file", "error": str(e)}
     
 
